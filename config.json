@@ -1,3 +1,9 @@
 {
-  "DISCORD_TOKEN": "MTE3NzcxMjYwOTQ0MTYzMjM3Nw.GcYwqQ.-CsAFvM3DUpgUcad7iUR7cWHrckJJd000fq908"
+  "DISCORD_TOKEN": "MTE3NzcxMjYwOTQ0MTYzMjM3Nw.GoCwro.g0BesZRBoleXsMxnNwERB7wgYxi4Dzb9HoNvA0",
+  "database": {
+    "host": "localhost",
+    "user": "azurie",
+    "password": "lilian.zarka",
+    "name": "azurie"
+  }
 }
