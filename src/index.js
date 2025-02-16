@@ -1,8 +1,8 @@
 const { ShewenyClient } = require("sheweny");
-const config = require("../config.json");
+const config = require("./config.json");
 
 const client = new ShewenyClient({
-  intents: ["Guilds", "GuildMessages"],
+  intents: ["Guilds", "GuildMessages", "GuildMembers"],
   managers: {
     commands: {
       directory: "./commands",
@@ -27,5 +27,8 @@ const client = new ShewenyClient({
   },
   mode : "development", // Change to production for production bot
 });
+
+
+client.config = config;
 
 client.login(config.DISCORD_TOKEN);

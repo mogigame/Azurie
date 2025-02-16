@@ -2,7 +2,7 @@ node_modules/
 
 config.json
 
-src/database.json
+src/database.js
 
 *.log
 *.txt
