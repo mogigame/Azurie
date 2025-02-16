@@ -20,6 +20,7 @@ module.exports = class UnlockCommand extends Command {
 
   async execute(interaction) {
     const channel = interaction.options.getChannel('canal');
+    const logChannel = interaction.guild.channels.cache.get(this.client.config.logChannelId);
 
     if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
       return interaction.reply({ content: 'Vous n\'avez pas la permission de déverrouiller des canaux.', ephemeral: true });
@@ -29,6 +30,7 @@ module.exports = class UnlockCommand extends Command {
       await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, {
         SendMessages: null,
       });
+      logChannel.send(`${interaction.user.tag} a déverrouillé ${channel.name}.`);
       return interaction.reply({ content: `${channel.name} a été déverrouillé avec succès.` });
     } catch (error) {
       console.error(error);

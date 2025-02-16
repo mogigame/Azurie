@@ -20,6 +20,7 @@ module.exports = class UnmuteCommand extends Command {
 
   async execute(interaction) {
     const member = interaction.options.getMember('utilisateur');
+    const logChannel = interaction.guild.channels.cache.get(this.client.config.logChannelId);
 
     if (!member) {
       return interaction.reply({ content: 'Utilisateur non trouvé.', ephemeral: true });
@@ -35,6 +36,7 @@ module.exports = class UnmuteCommand extends Command {
 
     try {
       await member.timeout(null);
+      logChannel.send(`${interaction.user.tag} a démuté ${member.user.tag}.`);
       return interaction.reply({ content: `${member.user.tag} a été démuté avec succès.` });
     } catch (error) {
       console.error(error);

@@ -20,6 +20,7 @@ module.exports = class PurgeCommand extends Command {
 
   async execute(interaction) {
     const user = interaction.options.getUser('utilisateur');
+    const logChannel = interaction.guild.channels.cache.get(this.client.config.logChannelId);
 
     if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
       return interaction.reply({ content: 'Vous n\'avez pas la permission de gérer les messages.', ephemeral: true });
@@ -30,6 +31,7 @@ module.exports = class PurgeCommand extends Command {
 
     try {
       await interaction.channel.bulkDelete(userMessages, true);
+      logChannel.send(`${user.tag} a supprimé tous les messages de ${user.tag} dans ${interaction.channel.name}.`);
       return interaction.reply({ content: `Tous les messages de ${user.tag} ont été supprimés avec succès.`, ephemeral: true });
     } catch (error) {
       console.error(error);

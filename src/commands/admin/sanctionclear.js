@@ -25,6 +25,7 @@ module.exports = class SanctionClearCommand extends Command {
   async execute(interaction) {
     const user = interaction.options.getUser('utilisateur');
     const userId = user.id;
+    const logChannel = interaction.guild.channels.cache.get(this.client.config.logChannelId);
 
     const bans = await Ban.destroy({ where: { userId } });
     const mutes = await Mute.destroy({ where: { userId } });
@@ -36,7 +37,8 @@ module.exports = class SanctionClearCommand extends Command {
       .setColor('#FF0000') // Utilisation de la valeur hexadécimale pour la couleur rouge
       .setDescription(`Toutes les sanctions pour ${user.tag} ont été supprimées.`)
       .setTimestamp();
-
+      
+    logChannel.send(`${interaction.user.tag} a supprimé toutes les sanctions pour ${user.tag}.`);
     return interaction.reply({ embeds: [embed] });
   }
 };

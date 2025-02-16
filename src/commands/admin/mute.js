@@ -34,7 +34,9 @@ module.exports = class MuteCommand extends Command {
   async execute(interaction) {
     const member = interaction.options.getMember('utilisateur');
     const duration = interaction.options.getInteger('durée');
-    const reason = interaction.options.getString('raison') || 'Aucune raison fournie';
+    const reason = interaction.options.getString('raison');
+    logChannel.send(`${unban.user.tag} a été débanni du serveur.`);
+
 
     if (!member) {
       return interaction.reply({ content: 'Utilisateur non trouvé.', ephemeral: true });
@@ -56,6 +58,7 @@ module.exports = class MuteCommand extends Command {
         reason: reason,
         duration: duration,
       });
+      logChannel.send(`${interaction.user.tag} a rendu muet ${member.user.tag} pour ${duration} minutes. Raison: ${reason}`);
       return interaction.reply({ content: `${member.user.tag} a été rendu muet pour ${duration} minutes. Raison: ${reason}` });
     } catch (error) {
       console.error(error);

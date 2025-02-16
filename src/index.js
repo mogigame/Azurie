@@ -2,7 +2,22 @@ const { ShewenyClient } = require("sheweny");
 const config = require("./config.json");
 
 const client = new ShewenyClient({
-  intents: ["Guilds", "GuildMessages", "GuildMembers"],
+  intents: [
+    "Guilds",
+    "GuildMessages",
+    "GuildMembers",
+    "GuildIntegrations",
+    "GuildInvites",
+    "GuildMessageReactions",
+    "GuildVoiceStates",
+    "GuildWebhooks",
+    "GuildPresences",
+    "GuildMessageTyping",
+    "GuildBans",
+    "DirectMessages",
+    "DirectMessageReactions",
+    "DirectMessageTyping"
+  ],
   managers: {
     commands: {
       directory: "./commands",
