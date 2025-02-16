@@ -1,5 +1,5 @@
 const { Sequelize } = require('sequelize');
-const config = require('../config.json');
+const config = require('./config.json');
 
 // Initialiser la base de données MariaDB (MySQL)
 const sequelize = new Sequelize(config.database.name, config.database.user, config.database.password, {
