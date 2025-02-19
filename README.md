@@ -5,7 +5,6 @@ Azurie est un bot modérateur conçu pour simplifier la gestion des serveurs Dis
 ## 📌 Fonctionnalités
 
 ### 🔹 Modération
-- Supprime les messages inappropriés, avertit ou bannit les utilisateurs contrevenants.
 - `ban` → Bannir un membre.
 - `unban` → Débannir un membre.
 - `ban-list` → Voir la liste des bannis.
