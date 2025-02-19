@@ -9,6 +9,7 @@ module.exports = class SuggestionCommand extends Command {
       name: 'suggestion',
       description: 'Envoyer une suggestion au staff',
       type: 'SLASH_COMMAND',
+      category: 'membre',
       options: [
         {
           name: 'message',

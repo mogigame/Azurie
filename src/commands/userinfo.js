@@ -7,6 +7,7 @@ module.exports = class UserInfoCommand extends Command {
       name: 'userinfo',
       description: 'Affiche les informations d\'un utilisateur',
       type: 'SLASH_COMMAND',
+      category: 'membre',
       options: [
         {
           name: 'utilisateur',

@@ -7,6 +7,7 @@ module.exports = class ReportCommand extends Command {
       name: 'report',
       description: 'Signaler un utilisateur',
       type: 'SLASH_COMMAND',
+      category: 'membre',
       options: [
         {
           name: 'utilisateur',

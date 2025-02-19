@@ -23,6 +23,7 @@ const client = new ShewenyClient({
       directory: "./commands",
       autoRegisterApplicationCommands: true,
       prefix: "!",
+      
     },
     events: {
       directory: "./events",

@@ -1,9 +1,7 @@
 const { Command } = require('sheweny');
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder } = require('discord.js')
 const fs = require('fs');
 const path = require('path');
-const configPath = path.resolve(__dirname, '../../config.json');
-let config = require(configPath);
 
 module.exports = class SetSuggestionChannelCommand extends Command {
   constructor(client) {
@@ -22,19 +20,27 @@ module.exports = class SetSuggestionChannelCommand extends Command {
     });
   }
 
-  async execute(interaction) {
-    const channel = interaction.options.getChannel('channel');
 
-    // Mettre à jour le fichier de configuration
-    config.suggestionChannelId = channel.id;
-    fs.writeFileSync(configPath, `module.exports = ${JSON.stringify(config, null, 2)};`);
+
+  async execute(interaction) {
+    const newChannel = interaction.options.getChannel('channel');
+    const configPath = path.resolve(__dirname, '../../config.json');
+
+
+    // Mettre à jour le salon de bienvenue en mémoire
+    this.client.config.suggestionChannelId = newChannel.id;
+
+    // Persister le changement dans le fichier config.json
+    const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    config.suggestionChannelId = newChannel.id;
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf8');
 
     const embed = new EmbedBuilder()
-      .setTitle('Salon de suggestions mis à jour')
-      .setColor('#00FF00') // Utilisation de la valeur hexadécimale pour la couleur verte
-      .setDescription(`Le salon de suggestions a été défini sur <#${channel.id}>.`)
-      .setTimestamp();
+    .setTitle('Salon de suggestions mis à jour')
+    .setColor('#00FF00') // Utilisation de la valeur hexadécimale pour la couleur verte
+    .setDescription(`Le salon de suggestions a été défini sur <#${newChannel.id}>.`)
+    .setTimestamp();
 
-    return interaction.reply({ embeds: [embed], flags: 64 }); // Utiliser les flags pour les réponses éphémères
+    await interaction.reply({ embeds: [embed], ephemeral: true });
   }
 };

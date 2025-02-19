@@ -7,6 +7,7 @@ module.exports = class ServerInfoCommand extends Command {
       name: 'serverinfo',
       description: 'Affiche les informations du serveur',
       type: 'SLASH_COMMAND',
+      category: 'membre'
     });
   }
 
