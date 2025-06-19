@@ -10,7 +10,7 @@ const Warn = require('../../models/Warn');
 module.exports = class CheckSanctionsCommand extends Command {
   constructor(client) {
     super(client, {
-      name: 'checksanctions',
+      name: 'view-sanctions',
       description: 'Vérifier les sanctions d\'un utilisateur',
       type: 'SLASH_COMMAND',
       options: [
