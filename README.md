@@ -60,7 +60,7 @@ npm i -g nodemon
 ```
 ### 3. Configurer le bot
 
-Dans le dossier racine du projet, vous devez créer un fichier `config.json`. Ce fichier contient des informations essentielles comme le token du bot, qui permet à Discord d’authentifier votre bot.
+Dans le dossier `src` du projet, vous devez créer un fichier `config.json`. Ce fichier contient des informations essentielles comme le token du bot, qui permet à Discord d’authentifier votre bot.
 
 #### Récupérer le token du bot :
 1. Allez sur [Discord Developer Portal](https://discord.com/developers/applications).
