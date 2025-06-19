@@ -25,20 +25,27 @@ module.exports = class SanctionClearCommand extends Command {
   async execute(interaction) {
     const user = interaction.options.getUser('utilisateur');
     const userId = user.id;
-    const logChannel = interaction.guild.channels.cache.get(this.client.config.logChannelId);
+    let logChannel;
+    if (this.client.config && this.client.config.logChannelId) {
+      logChannel = interaction.guild.channels.cache.get(this.client.config.logChannelId);
+    }
 
-    const bans = await Ban.destroy({ where: { userId } });
-    const mutes = await Mute.destroy({ where: { userId } });
-    const reports = await Report.destroy({ where: { userId } });
-    const warns = await Warn.destroy({ where: { userId } });
+    await Ban.destroy({ where: { userId } });
+    await Mute.destroy({ where: { userId } });
+    await Report.destroy({ where: { userId } });
+    await Warn.destroy({ where: { userId } });
 
     const embed = new EmbedBuilder()
       .setTitle(`Sanctions supprimées pour ${user.tag}`)
-      .setColor('#FF0000') // Utilisation de la valeur hexadécimale pour la couleur rouge
+      .setColor('#FF0000')
       .setDescription(`Toutes les sanctions pour ${user.tag} ont été supprimées.`)
       .setTimestamp();
-      
-    logChannel.send(`${interaction.user.tag} a supprimé toutes les sanctions pour ${user.tag}.`);
+
+    if (logChannel) {
+      logChannel.send(`${interaction.user.tag} a supprimé toutes les sanctions pour ${user.tag}.`);
+    } else {
+      console.log('Salon de logs introuvable pour journaliser la suppression des sanctions.');
+    }
     return interaction.reply({ embeds: [embed] });
   }
 };

@@ -27,10 +27,13 @@ module.exports = class WarnCommand extends Command {
   async execute(interaction) {
     const user = interaction.options.getUser('utilisateur');
     const reason = interaction.options.getString('raison');
-    const logChannel = interaction.guild.channels.cache.get(this.client.config.logChannelId);
+    let logChannel;
+    if (this.client.config && this.client.config.logChannelId) {
+      logChannel = interaction.guild.channels.cache.get(this.client.config.logChannelId);
+    }
 
     if (!interaction.member.permissions.has('MANAGE_MESSAGES')) {
-      return interaction.reply({ content: 'Vous n\'avez pas la permission d\'avertir des membres.', ephemeral: true });
+      return interaction.reply({ content: 'Vous n\'avez pas la permission d\'avertir des membres.', flags: 64 });
     }
 
     try {
@@ -39,11 +42,13 @@ module.exports = class WarnCommand extends Command {
         moderatorId: interaction.user.id,
         reason: reason,
       });
-      logChannel.send(`${interaction.user.tag} a averti ${user.tag}.`);
+      if (logChannel) {
+        logChannel.send(`${interaction.user.tag} a averti ${user.tag}.`);
+      }
       return interaction.reply({ content: `${user.tag} a été averti avec succès. Raison: ${reason}` });
     } catch (error) {
       console.error(error);
-      return interaction.reply({ content: 'Une erreur est survenue lors de l\'enregistrement de l\'avertissement.', ephemeral: true });
+      return interaction.reply({ content: 'Une erreur est survenue lors de l\'enregistrement de l\'avertissement.', flags: 64 });
     }
   }
 };

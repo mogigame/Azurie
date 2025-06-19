@@ -44,7 +44,11 @@ module.exports = class ChangeRoleMemberCommand extends Command {
         const archiveCategory = interaction.options.getChannel('archive-catégorie');
         const archiveChannel = interaction.options.getChannel('archive-channel');
         const configPath = path.resolve(__dirname, '../../config.json');
-        const logChannel = interaction.guild.channels.cache.get(this.client.config.logChannelId);
+        // Vérifie que la config et le logChannelId existent et que le salon existe bien
+        let logChannel;
+        if (this.client.config && this.client.config.logChannelId) {
+            logChannel = interaction.guild.channels.cache.get(this.client.config.logChannelId);
+        }
 
         // Mettre à jour le rôle en mémoire
         this.client.config.openTicketCategoryId = openCategory.id;
@@ -60,7 +64,17 @@ module.exports = class ChangeRoleMemberCommand extends Command {
         config.archiveTicketChannelId = archiveChannel.id;
         fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf8');
 
-        await interaction.reply({ content: `Les catégorie des tickets ont été changer`, ephemeral: true });
-        logChannel.send(`Les catégories des tickets ont été changées. Catégorie ouverte : ${openCategory.name}\n Catégorie fermée : ${closeCategory.name}\n Catégorie archivée : ${archiveCategory.name}\n Channel archivé : ${archiveChannel.name}`);
+        await interaction.reply({ content: `Les catégories des tickets ont été changées.`, ephemeral: true });
+
+        // N'envoie un message dans les logs que si logChannel existe
+        if (logChannel) {
+            logChannel.send(
+                `Les catégories des tickets ont été changées.\n` +
+                `Catégorie ouverte : ${openCategory.name}\n` +
+                `Catégorie fermée : ${closeCategory.name}\n` +
+                `Catégorie archivée : ${archiveCategory.name}\n` +
+                `Channel archivé : ${archiveChannel.name}`
+            );
+        }
     }
 };

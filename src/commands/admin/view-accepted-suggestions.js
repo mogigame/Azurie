@@ -19,7 +19,7 @@ module.exports = class ViewAcceptedSuggestionsCommand extends Command {
     this.currentIndex = 0;
 
     if (this.suggestions.length === 0) {
-      return interaction.reply('Aucune suggestion acceptée.');
+      return interaction.reply({ content: 'Aucune suggestion acceptée.', flags: 64 });
     }
 
     const suggestion = this.suggestions[this.currentIndex];
@@ -37,16 +37,20 @@ module.exports = class ViewAcceptedSuggestionsCommand extends Command {
 
     collector.on('collect', async (i) => {
       if (i.user.id !== interaction.user.id) {
-        return i.reply({ content: "Vous ne pouvez pas utiliser ces boutons.", ephemeral: true });
+        return i.reply({ content: "Vous ne pouvez pas utiliser ces boutons.", flags: 64 });
       }
       await this.handleButtonInteraction(i);
     });
 
     collector.on('end', async () => {
-      // Disable buttons after the collector ends
+      // Désactive les boutons après la fin du collector
       const disabledRow = createActionRow(this.currentIndex, this.suggestions.length);
       disabledRow.components.forEach((component) => component.setDisabled(true));
-      await interaction.editReply({ components: [disabledRow] });
+      try {
+        await interaction.editReply({ components: [disabledRow] });
+      } catch (e) {
+        // ignore l'erreur si le message n'existe plus ou déjà édité
+      }
     });
   }
 
@@ -86,9 +90,9 @@ module.exports = class ViewAcceptedSuggestionsCommand extends Command {
     try {
       await interaction.update({ embeds: [embed], components: [row] });
     } catch (error) {
-      if (error.code === 10062) {
-        // Interaction has expired, handle the error gracefully
-        console.error('Interaction has expired:', error);
+      if (error.code === 10062 || error.code === 40060) {
+        // Interaction expirée ou déjà acquittée
+        console.error('Interaction expired or already acknowledged:', error);
       } else {
         throw error;
       }

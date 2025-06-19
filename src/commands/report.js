@@ -28,7 +28,10 @@ module.exports = class ReportCommand extends Command {
   async execute(interaction) {
     const user = interaction.options.getUser('utilisateur');
     const reason = interaction.options.getString('raison');
-    const logChannel = interaction.guild.channels.cache.get(this.client.config.logChannelId);
+    let logChannel;
+    if (this.client.config && this.client.config.logChannelId) {
+      logChannel = interaction.guild.channels.cache.get(this.client.config.logChannelId);
+    }
 
     try {
       await Report.create({
@@ -36,11 +39,13 @@ module.exports = class ReportCommand extends Command {
         reporterId: interaction.user.id,
         reason: reason,
       });
-      logChannel.send(`${interaction.user.tag} a signalé ${user.tag}.`);
-      return interaction.reply({ content: `L'utilisateur ${user.tag} a été signalé avec succès. Raison: ${reason}`, ephemeral: true });
+      if (logChannel) {
+        logChannel.send(`${interaction.user.tag} a signalé ${user.tag}.`);
+      }
+      return interaction.reply({ content: `L'utilisateur ${user.tag} a été signalé avec succès. Raison: ${reason}`, flags: 64 });
     } catch (error) {
       console.error(error);
-      return interaction.reply({ content: 'Une erreur est survenue lors de l\'enregistrement du signalement.', ephemeral: true });
+      return interaction.reply({ content: 'Une erreur est survenue lors de l\'enregistrement du signalement.', flags: 64 });
     }
   }
 };

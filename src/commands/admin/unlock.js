@@ -20,21 +20,26 @@ module.exports = class UnlockCommand extends Command {
 
   async execute(interaction) {
     const channel = interaction.options.getChannel('canal');
-    const logChannel = interaction.guild.channels.cache.get(this.client.config.logChannelId);
+    let logChannel;
+    if (this.client.config && this.client.config.logChannelId) {
+      logChannel = interaction.guild.channels.cache.get(this.client.config.logChannelId);
+    }
 
     if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
-      return interaction.reply({ content: 'Vous n\'avez pas la permission de déverrouiller des canaux.', ephemeral: true });
+      return interaction.reply({ content: 'Vous n\'avez pas la permission de déverrouiller des canaux.', flags: 64 });
     }
 
     try {
       await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, {
         SendMessages: null,
       });
-      logChannel.send(`${interaction.user.tag} a déverrouillé ${channel.name}.`);
+      if (logChannel) {
+        logChannel.send(`${interaction.user.tag} a déverrouillé ${channel.name}.`);
+      }
       return interaction.reply({ content: `${channel.name} a été déverrouillé avec succès.` });
     } catch (error) {
       console.error(error);
-      return interaction.reply({ content: 'Une erreur est survenue lors du déverrouillage du canal.', ephemeral: true });
+      return interaction.reply({ content: 'Une erreur est survenue lors du déverrouillage du canal.', flags: 64 });
     }
   }
 };

@@ -23,7 +23,10 @@ module.exports = class ChangeRoleMemberCommand extends Command {
   async execute(interaction) {
     const newRole = interaction.options.getRole('role');
     const configPath = path.resolve(__dirname, '../../config.json');
-    const logChannel = interaction.guild.channels.cache.get(this.client.config.logChannelId);
+    let logChannel;
+    if (this.client.config && this.client.config.logChannelId) {
+      logChannel = interaction.guild.channels.cache.get(this.client.config.logChannelId);
+    }
 
     // Mettre à jour le rôle en mémoire
     this.client.config.roleMembreId = newRole.id;
@@ -34,6 +37,9 @@ module.exports = class ChangeRoleMemberCommand extends Command {
     fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf8');
 
     await interaction.reply({ content: `L'ID du rôle à attribuer a été changé en ${newRole.name}.`, ephemeral: true });
-    logChannel.send(`Le rôle membre à attribuer lorsqu'un utilisateur rejoint le server été changé en ${newRole.name}.`);
+
+    if (logChannel) {
+      logChannel.send(`Le rôle membre à attribuer lorsqu'un utilisateur rejoint le serveur a été changé en ${newRole.name}.`);
+    }
   }
 };

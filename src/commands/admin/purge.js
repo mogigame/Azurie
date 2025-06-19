@@ -11,7 +11,7 @@ module.exports = class PurgeCommand extends Command {
         {
           name: 'utilisateur',
           description: 'L\'utilisateur dont les messages doivent être supprimés',
-          type: 6, 
+          type: 6,
           required: true,
         },
       ],
@@ -20,10 +20,13 @@ module.exports = class PurgeCommand extends Command {
 
   async execute(interaction) {
     const user = interaction.options.getUser('utilisateur');
-    const logChannel = interaction.guild.channels.cache.get(this.client.config.logChannelId);
+    let logChannel;
+    if (this.client.config && this.client.config.logChannelId) {
+      logChannel = interaction.guild.channels.cache.get(this.client.config.logChannelId);
+    }
 
     if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-      return interaction.reply({ content: 'Vous n\'avez pas la permission de gérer les messages.', ephemeral: true });
+      return interaction.reply({ content: 'Vous n\'avez pas la permission de gérer les messages.', flags: 64 });
     }
 
     const messages = await interaction.channel.messages.fetch();
@@ -31,11 +34,13 @@ module.exports = class PurgeCommand extends Command {
 
     try {
       await interaction.channel.bulkDelete(userMessages, true);
-      logChannel.send(`${user.tag} a supprimé tous les messages de ${user.tag} dans ${interaction.channel.name}.`);
-      return interaction.reply({ content: `Tous les messages de ${user.tag} ont été supprimés avec succès.`, ephemeral: true });
+      if (logChannel) {
+        logChannel.send(`${interaction.user.tag} a supprimé tous les messages de ${user.tag} dans ${interaction.channel.name}.`);
+      }
+      return interaction.reply({ content: `Tous les messages de ${user.tag} ont été supprimés avec succès.`, flags: 64 });
     } catch (error) {
       console.error(error);
-      return interaction.reply({ content: 'Une erreur est survenue lors de la suppression des messages de cet utilisateur.', ephemeral: true });
+      return interaction.reply({ content: 'Une erreur est survenue lors de la suppression des messages de cet utilisateur.', flags: 64 });
     }
   }
 };

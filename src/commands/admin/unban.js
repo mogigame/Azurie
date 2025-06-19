@@ -22,7 +22,10 @@ module.exports = class UnbanCommand extends Command {
   async execute(interaction) {
     const user = interaction.options.getUser('utilisateur');
     const userId = user.id;
-    const logChannel = interaction.guild.channels.cache.get(this.client.config.logChannelId);
+    let logChannel;
+    if (this.client.config && this.client.config.logChannelId) {
+      logChannel = interaction.guild.channels.cache.get(this.client.config.logChannelId);
+    }
 
     const ban = await Ban.findOne({ where: { userId, active: true } });
 
@@ -36,11 +39,13 @@ module.exports = class UnbanCommand extends Command {
 
     const embed = new EmbedBuilder()
       .setTitle(`Utilisateur débanni: ${user.tag}`)
-      .setColor('#00FF00') // Utilisation de la valeur hexadécimale pour la couleur verte
+      .setColor('#00FF00')
       .setDescription(`${user.tag} a été débanni avec succès.`)
       .setTimestamp();
 
-    logChannel.send(`${interaction.user.tag} a débanni ${user.tag}.`);
+    if (logChannel) {
+      logChannel.send(`${interaction.user.tag} a débanni ${user.tag}.`);
+    }
     return interaction.reply({ embeds: [embed] });
   }
 };
